@@ -1,18 +1,24 @@
-const app = require('koa')();
-const router = require('koa-router')();
+var Koa = require('koa');
+var Router = require('koa-router');
+
+var app = new Koa();
+var router = new Router();
 const koaBetterBody = require('koa-better-body');
+const serve = require('koa-better-serve');
 
 const customerService = require('./services/customerService');
 const authenticate = require('./middlewares/authenticate.js');
-const jwt = require('./middlewares/jwt');
+//const jwt = require('./middlewares/jwt');
 
 app.use(koaBetterBody({fields: 'body'}));
+
+app.use(serve('./client', '/'));
 
 router.get('/', function *() {
   this.body = 'Welcome to the demo api of koa router';
 });
 
-router.get('/customer', jwt, function *() {
+router.get('/customer', function *() {
   this.body = customerService.getCustomers();
 });
 
@@ -26,7 +32,7 @@ router.get('/customer/:id', function *() {
   }
 });
 
-router.post('/customer', jwt, function *() {
+router.post('/customer', function *() {
   this.body = customerService.postCustomer(this.request.body);
 });
 
