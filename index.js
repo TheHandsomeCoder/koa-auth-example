@@ -1,46 +1,36 @@
 var Koa = require('koa');
 var Router = require('koa-router');
+var serve = require('koa-static');
+var KoaBetterBody = require('koa-better-body');
+var convert = require('koa-convert');
+
 
 var app = new Koa();
 var router = new Router();
-const koaBetterBody = require('koa-better-body');
-const serve = require('koa-better-serve');
 
 const customerService = require('./services/customerService');
 const authenticate = require('./middlewares/authenticate.js');
-//const jwt = require('./middlewares/jwt');
+const jwt = require('./middlewares/jwt');
 
-app.use(koaBetterBody({fields: 'body'}));
+//app.use(koaBetterBody({fields: 'body'}));
 
-app.use(serve('./client', '/'));
+//app.use(serve('./client', '/'));
 
-router.get('/', function *() {
-  this.body = 'Welcome to the demo api of koa router';
+router.get('/', async function (ctx, next) {
+    ctx.body = 'Hello World!';
+})
+
+router.post('/login', async function(ctx, next) {
+  authenticate(ctx);
 });
 
-router.get('/customer', function *() {
-  this.body = customerService.getCustomers();
-});
-
-router.get('/customer/:id', function *() {
-  if (customerService.getCustomer(this.params.id)) {
-    this.body = customerService.getCustomer(this.params.id);
-  }
-  else {
-    this.status = 404;
-    this.body = {"error": "There is no customer with that id"};
-  }
-});
-
-router.post('/customer', function *() {
-  this.body = customerService.postCustomer(this.request.body);
-});
-
-router.post('/login', function *() {
-  authenticate(this);
+router.get('/customers',jwt, async function(ctx, next) {
+   ctx.body = customerService.getCustomers();
 });
 
 app
+  .use(serve('./client/'))
+  .use(convert(KoaBetterBody({fields: 'body'})))
   .use(router.routes())
   .use(router.allowedMethods());
 

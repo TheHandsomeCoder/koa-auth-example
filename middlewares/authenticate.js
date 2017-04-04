@@ -1,6 +1,6 @@
-const jwt = require('koa-jwt');
+const jwt = require('jsonwebtoken');
 
-module.exports = function (ctx) {
+module.exports = async function (ctx) {
   if (ctx.request.body.password === 'password') {
     ctx.status = 200;
     ctx.cookies.set('whyJamesCryin', jwt.sign({ role: 'admin' }, 'A very secret key'));
@@ -13,5 +13,4 @@ module.exports = function (ctx) {
       message: "Authentication failed"
     };
   }
-  return ctx;
 }
