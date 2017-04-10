@@ -18,11 +18,13 @@
   },
   "homepage": "https://github.com/Theodo-UK/blog-koa-jwt#readme",
   "dependencies": {
+    "camo": "^0.12.3",
     "jsonwebtoken": "^7.3.0",
     "koa": "^2.2.0",
     "koa-better-body": "^3.0.2",
     "koa-convert": "^1.2.0",
     "koa-jwt": "^3.2.1",
-    "koa-router": "^7.1.1"
+    "koa-router": "^7.1.1",
+    "node-bcrypt": "0.0.1"
   }
 }
