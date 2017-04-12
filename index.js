@@ -21,7 +21,7 @@ router.get('/', async function (ctx, next) {
     ctx.body = 'Hello World!';
 })
 
-router.post('/login', async function(ctx, next) {
+router.post('/authenticate', async function(ctx, next) {
   await authenticate(ctx);
 });
 

@@ -1,14 +1,17 @@
 const jwt = require('jsonwebtoken');
 const keys = require('./keys')();
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 module.exports = async function (ctx) {
 
   const email = ctx.request.body.email;
   const password = ctx.request.body.password;
 
+
   const user = await User.findOne({ email: email });
-  if (user && userPasswordMatches(user, password)) {
+  const passwordMatches = await userPasswordMatches(user.password, password);
+  if (user && passwordMatches) {
       authenticationSuccessful(ctx);
     }
     else {
@@ -16,8 +19,8 @@ module.exports = async function (ctx) {
     }
 }
 
-function userPasswordMatches(user, password) {
-  return user.password == password;
+function userPasswordMatches(userPassword, password) {
+  return bcrypt.compare(password, userPassword);
 }
 
 function authenticationSuccessful(ctx) {
